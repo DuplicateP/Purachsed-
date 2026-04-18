@@ -299,6 +299,33 @@ async def drm_handler(bot: Client, m: Message):
                 params = {"url": f"{url}"}
                 response = requests.get('https://api.classplusapp.com/cams/uploader/video/jw-signed-url', headers=headers, params=params)
                 url = response.json()['url']  
+
+            elif 'classplusapp' in url or "testbook.com" in url or "classplusapp.com/drm" in url or "media-cdn.classplusapp.com/drm" in url:
+                url, contentId = url.split('&')
+                
+                headers = {
+                    'host': 'api.classplusapp.com',
+                    'x-access-token': f'{cptoken}',    
+                    'accept-language': 'EN',
+                    'api-version': '18',
+                    'app-version': '1.4.73.2',
+                    'build-number': '35',
+                    'connection': 'Keep-Alive',
+                    'content-type': 'application/json',
+                    'device-details': 'Xiaomi_Redmi 7_SDK-32',
+                    'device-id': 'c28d3cb16bbdac01',
+                    'region': 'IN',
+                    'user-agent': 'Mobile-Android',
+                    'webengage-luid': '00000187-6fe4-5d41-a530-26186858be4c',
+                    'accept-encoding': 'gzip'
+                }
+                
+                params = {
+                    'contentId': contentId,
+                    'offlineDownload': "false"
+                }
+
+                url = requests.get("https://api.classplusapp.com/cams/uploader/video/jw-signed-url", params=params, headers=headers).json().get("url")
            
             elif 'videos.classplusapp' in url:
                 url = requests.get(f'https://api.classplusapp.com/cams/uploader/video/jw-signed-url?url={url}', headers={'x-access-token': f'{cptoken}'}).json()['url']
